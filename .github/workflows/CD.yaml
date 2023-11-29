@@ -1,0 +1,15 @@
+name: Continuous deployment
+on:
+  push:
+    tags:
+      - '*-prod'
+      - '*-beta'
+
+  workflow_run:
+    workflows: ["Continuous integration"]
+    branches: [main]
+    types: [completed]
+jobs:
+  cd:
+    uses: pbstck/actions/.github/workflows/CD.yaml@v1
+    secrets: inherit
