@@ -1,0 +1,39 @@
+version: '3'
+
+
+#internal: true
+
+tasks:
+  artifact/deliver:
+    requires:
+      vars: [BINARY_NAME, PROJECT, GIT_REVISION]
+    cmds:
+      - aws s3 cp {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.GIT_REVISION}}.zip
+
+  artifact/retrieve:
+    requires:
+      vars: [BINARY_NAME, PROJECT, GIT_REVISION]
+    cmds:
+      - aws s3 cp s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.GIT_REVISION}}.zip {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip
+
+
+  ecr-login:
+    internal: true
+    cmds:
+      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 563565546264.dkr.ecr.eu-west-1.amazonaws.com
+
+  bin:
+    cmds:
+      - mkdir -p {{.ROOT_DIR}}/bin
+
+  tag:
+    silent: true
+    internal: true
+    requires:
+      vars: [STAGE]
+    vars:
+      TAG:
+        sh : TZ=ETC/UTC date +%Y-%m-%dT%H-%M-%SZ-{{.STAGE}}
+    cmds:
+      - git tag {{.TAG}}
+      - echo "DONT FORGET TO 'git push origin {{.TAG}}'"

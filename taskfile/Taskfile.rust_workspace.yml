@@ -1,0 +1,42 @@
+version: '3'
+
+internal: true
+
+includes:
+  common:
+    taskfile: ./Taskfile.common.yml
+
+tasks:
+  build:
+    deps: [ common:ecr-login, common:bin ]
+    requires:
+      vars: [ BINARIES_NAME ]
+    cmds:
+      - cross build --target x86_64-unknown-linux-gnu --release
+      - for: { var: BINARIES_NAME }
+        cmd: cp ./target/x86_64-unknown-linux-gnu/release/{{.ITEM}} ./bootstrap && zip -r {{.ROOT_DIR}}/bin/{{.ITEM}}.zip ./bootstrap
+
+  test:
+    cmds:
+      - cargo test
+
+  test/coverage:
+    vars:
+      ALL_PROJECTS:
+        sh: ls {{.TASKFILE_DIR}}
+    cmds:
+      - cargo tarpaulin --out Xml
+      - for: { var: ALL_PROJECTS }
+        dir: {{.ITEM}}
+        cmd: cargo tarpaulin --out Xml --lib  --skip-clean
+
+
+  lint/check:
+    cmds:
+      - cargo fmt --all -- --check
+      - cargo clippy -- -D warnings
+
+  lint/format:
+    cmds:
+      - cargo fmt --all
+      - cargo clippy -- -D warnings
