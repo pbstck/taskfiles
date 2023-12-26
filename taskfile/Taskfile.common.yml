@@ -26,9 +26,17 @@ tasks:
     cmds:
       - mkdir -p {{.ROOT_DIR}}/bin
 
+
+  next_upgrade:
+    internal: true
+    cmds:
+      - ./scripts/next_upgrade.sh
+
+
   tag:
     silent: true
     internal: true
+    deps: [next_upgrade]
     requires:
       vars: [STAGE]
     vars:

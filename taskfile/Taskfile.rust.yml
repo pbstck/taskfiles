@@ -40,8 +40,9 @@ tasks:
 
 
   artifact/mock:
+    deps: [common:bin]
     cmds:
-      - for: { var: BINARIES_NAME }
+      - for: { var: BINARY_NAME }
         cmd: touch {{.USER_WORKING_DIR}}/bin/{{.ITEM}}.zip
 
   artifact/deliver:
