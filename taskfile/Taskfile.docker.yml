@@ -2,22 +2,21 @@ version: '3'
 
 internal: true
 
-tasks:
-  ecr-login:
-    internal: true
-    cmds:
-      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 563565546264.dkr.ecr.eu-west-1.amazonaws.com
+includes:
+  common:
+    taskfile: ./Taskfile.common.yml
 
+tasks:
   deliver:
+    deps: [common:ecr-login]
     requires:
       vars: [BINARY_NAME, GIT_REVISION]
     cmds:
       - docker push 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.BINARY_NAME}}:{{.GIT_REVISION}}
 
   build:
+    deps: [common:ecr-login]
     requires:
       vars: [BINARY_NAME, GIT_REVISION]
     cmds:
-      - unzip {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip
       - docker build -t 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.BINARY_NAME}}:{{.GIT_REVISION}} .
-      - rm ./bootstrap
