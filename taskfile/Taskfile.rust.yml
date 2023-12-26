@@ -11,13 +11,13 @@ includes:
 
 tasks:
   build:
-    deps: [ common:bin ]
+    deps: [ common:ecr-login, common:bin ]
     requires:
-      vars: [ BINARY_NAME, RUST_WORKSPACE_DIR ]
+      vars: [ BINARIES_NAME, RUST_WORKSPACE_DIR ]
     cmds:
-      - cargo build --target x86_64-unknown-linux-gnu --release
-      - cp {{.RUST_WORKSPACE_DIR}}/target/x86_64-unknown-linux-gnu/release/{{.BINARY_NAME}} ./bootstrap && zip -r {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip ./bootstrap
-      - rm ./bootstrap
+      - cross build --target x86_64-unknown-linux-gnu --release
+      - for: { var: BINARIES_NAME }
+        cmd: cp {{.RUST_WORKSPACE_DIR}}/target/x86_64-unknown-linux-gnu/release/{{.ITEM}} ./bootstrap && zip -r {{.ROOT_DIR}}/bin/{{.ITEM}}.zip ./bootstrap
 
   test:
     cmds:
@@ -40,10 +40,10 @@ tasks:
 
 
   artifact/mock:
-    deps: [common:bin]
+    deps: [ common:bin ]
     cmds:
-      - for: { var: BINARY_NAME }
-        cmd: touch {{.USER_WORKING_DIR}}/bin/{{.ITEM}}.zip
+      - for: { var: BINARIES_NAME }
+        cmd: touch {{.ROOT_DIR}}/bin/{{.ITEM}}.zip
 
   artifact/deliver:
     cmds:
