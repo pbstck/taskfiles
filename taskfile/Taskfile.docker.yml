@@ -10,13 +10,15 @@ tasks:
   deliver:
     deps: [common:ecr-login]
     requires:
-      vars: [BINARY_NAME, GIT_REVISION]
+      vars: [BINARIES_NAME, GIT_REVISION]
     cmds:
-      - docker push 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.BINARY_NAME}}:{{.GIT_REVISION}}
+      - for: { var: BINARIES_NAME }
+        cmd: docker push 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.KEY}}:{{.GIT_REVISION}}
 
   build:
     deps: [common:ecr-login]
     requires:
       vars: [BINARY_NAME, GIT_REVISION]
     cmds:
-      - docker build -t 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.BINARY_NAME}}:{{.GIT_REVISION}} .
+      - for: { var: BINARIES_NAME }
+        cmd: docker build -f {{.ITEM}} -t 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.KEY}}:{{.GIT_REVISION}} .

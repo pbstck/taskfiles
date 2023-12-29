@@ -1,7 +1,7 @@
 version: '3'
 
 vars:
-  PLAN_PATH: /tmp/{{.PROJECT}}_plan.tfplan
+  PLAN_PATH: '{{.PLAN_PATH | default "/tmp/{{.PROJECT}}_plan.tfplan"}}'
 tasks:
   terraform/plan:
     requires:
