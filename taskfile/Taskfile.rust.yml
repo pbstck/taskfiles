@@ -15,7 +15,7 @@ tasks:
     requires:
       vars: [ BINARIES_NAME, RUST_WORKSPACE_DIR ]
     cmds:
-      - cross build --target x86_64-unknown-linux-gnu --release
+      - cargo build --target x86_64-unknown-linux-gnu --release
       - for: { var: BINARIES_NAME }
         cmd: cp {{.RUST_WORKSPACE_DIR}}/target/x86_64-unknown-linux-gnu/release/{{.ITEM}} ./bootstrap && zip -r {{.ROOT_DIR}}/bin/{{.ITEM}}.zip ./bootstrap
 
