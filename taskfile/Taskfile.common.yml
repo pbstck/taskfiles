@@ -19,12 +19,13 @@ tasks:
 
 
   ecr-login:
+    run: once
     internal: true
     cmds:
       - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin 563565546264.dkr.ecr.eu-west-1.amazonaws.com
 
   bin:
-    silent: true
+    run: once
     cmds:
       - mkdir -p {{.ROOT_DIR}}/bin
 
