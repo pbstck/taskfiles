@@ -1,0 +1,54 @@
+version: '3'
+
+internal: true
+
+includes:
+  common:
+    taskfile: ./Taskfile.common.yml
+
+tasks:
+  build:
+    deps: [ common:bin ]
+    requires:
+      vars: [ BINARIES_NAME ]
+    cmds:
+      - for: { var: BINARIES_NAME }
+        task: build_one
+        vars: { BINARY_NAME: "{{.KEY}}", PATH: "{{.ITEM}}" }
+
+  build_one:
+    deps: [ common:bin ]
+    requires:
+      vars: [ BINARY_NAME, PATH ]
+    cmds:
+      - GOOS=linux go build -ldflags="-s -w" -tags lambda.norpc -o bootstrap {{.PATH}}
+      - zip -r9 {{.USER_WORKING_DIR}}/bin/{{.BINARY_NAME}}.zip ./bootstrap
+      - rm ./bootstrap
+
+  test:
+    cmds:
+      - go test -v ./...
+
+
+  lint/check:
+    cmds:
+      - gofmt -l -s ./ && [ -z "$(gofmt -l -s ./)" ]
+
+  lint/format:
+    cmds:
+      - gofmt -l -s -w ./
+
+  artifact/mock:
+    deps: [ common:bin ]
+    cmds:
+      - for: { var: BINARIES_NAME }
+        cmd: touch {{.USER_WORKING_DIR}}/bin/{{.ITEM}}.zip
+
+  artifact/deliver:
+    cmds:
+      - task: common:artifact/deliver
+
+  artifact/retrieve:
+    deps: [ common:bin ]
+    cmds:
+      - task: common:artifact/retrieve

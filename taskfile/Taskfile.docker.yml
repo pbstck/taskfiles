@@ -1,0 +1,24 @@
+version: '3'
+
+internal: true
+
+includes:
+  common:
+    taskfile: ./Taskfile.common.yml
+
+tasks:
+  deliver:
+    deps: [common:ecr-login]
+    requires:
+      vars: [BINARIES_NAME, GIT_REVISION]
+    cmds:
+      - for: { var: BINARIES_NAME }
+        cmd: docker push 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.KEY}}:{{.GIT_REVISION}}
+
+  build:
+    deps: [common:ecr-login]
+    requires:
+      vars: [BINARY_NAME, GIT_REVISION]
+    cmds:
+      - for: { var: BINARIES_NAME }
+        cmd: docker build -f {{.ITEM}} -t 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.KEY}}:{{.GIT_REVISION}} .

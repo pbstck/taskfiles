@@ -1,0 +1,31 @@
+version: '3'
+
+vars:
+  PLAN_PATH: '{{.PLAN_PATH | default "/tmp/{{.PROJECT}}_plan.tfplan"}}'
+tasks:
+  terraform/plan:
+    requires:
+      vars: [STAGE]
+    cmds:
+      - echo "planning project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
+      - terraform init -reconfigure
+      - terraform workspace select -or-create {{.STAGE}}
+      - terraform init -reconfigure
+      - terraform plan -var git_revision={{.GIT_REVISION}} -out={{.PLAN_PATH}} {{.ADDITIONAL_VARIABLE}}
+  terraform/apply:
+    requires:
+      vars: [ STAGE ]
+    cmds:
+      - echo "planning project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
+      - terraform init -reconfigure
+      - terraform workspace select -or-create {{.STAGE}}
+      - terraform init -reconfigure
+      - terraform apply {{.PLAN_PATH}}
+
+  lint/check:
+    cmds:
+      - terraform fmt -check -recursive
+
+  lint/format:
+    cmds:
+      - terraform fmt -recursive
