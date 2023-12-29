@@ -13,7 +13,17 @@ tasks:
       vars: [ BINARIES_NAME ]
     cmds:
       - for: { var: BINARIES_NAME }
-        cmd: GOOS=linux go build -ldflags="-s -w" -tags lambda.norpc -o bootstrap {{.ITEM}} && zip -r9 {{.USER_WORKING_DIR}}/bin/{{.KEY}}.zip ./bootstrap && rm ./bootstrap
+        task: build_one
+        vars: { BINARY_NAME: "{{.KEY}}", PATH: "{{.ITEM}}" }
+
+  build_one:
+    deps: [ common:bin ]
+    requires:
+      vars: [ BINARY_NAME, PATH ]
+    cmds:
+      - GOOS=linux go build -ldflags="-s -w" -tags lambda.norpc -o bootstrap {{.PATH}}
+      - zip -r9 {{.USER_WORKING_DIR}}/bin/{{.BINARY_NAME}}.zip ./bootstrap
+      - rm ./bootstrap
 
   test:
     cmds:
