@@ -24,8 +24,11 @@ tasks:
       - cargo test
 
   test/coverage:
+    vars:
+      ALL_PROJECTS: '$find . -mindepth 1 -maxdepth 1 -type d  -exec test -e "{}/Cargo.toml" ";" -print'
     cmds:
-      - cargo tarpaulin --out Xml --lib  --skip-clean
+      - for: { var: ALL_PROJECTS }
+        cmd: cd {{.ITEM}} && cargo tarpaulin --output-dir {{.ITEM}} --out Xml --lib  --skip-clean
 
 
   lint/check:
