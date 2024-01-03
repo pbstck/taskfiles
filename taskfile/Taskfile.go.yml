@@ -17,6 +17,7 @@ tasks:
         vars: { BINARY_NAME: "{{.KEY}}", PATH: "{{.ITEM}}" }
 
   build_one:
+    internal: true
     deps: [ common:bin ]
     requires:
       vars: [ BINARY_NAME, PATH ]
