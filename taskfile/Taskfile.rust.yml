@@ -8,6 +8,7 @@ vars:
 includes:
   common:
     taskfile: ./Taskfile.common.yml
+    internal: true
 
 tasks:
   build:
@@ -25,7 +26,8 @@ tasks:
 
   test/coverage:
     vars:
-      ALL_PROJECTS: '$find . -mindepth 1 -maxdepth 1 -type d  -exec test -e "{}/Cargo.toml" ";" -print'
+      ALL_PROJECTS:
+        sh: find . -mindepth 1 -maxdepth 1 -type d  -exec test -e "{}/Cargo.toml" ";" -print
     cmds:
       - for: { var: ALL_PROJECTS }
         cmd: cd {{.ITEM}} && cargo tarpaulin --output-dir {{.ITEM}} --out Xml --lib  --skip-clean
