@@ -41,7 +41,8 @@ tasks:
     requires:
       vars: [STAGE]
     vars:
-      TAG: "$TZ=ETC/UTC date +%Y-%m-%dT%H-%M-%SZ-{{.STAGE}}"
+      TAG:
+        sh: TZ=ETC/UTC date +%Y-%m-%dT%H-%M-%SZ-{{.STAGE}}
     cmds:
       - git tag {{.TAG}}
       - echo "DONT FORGET TO 'git push origin {{.TAG}}'"
