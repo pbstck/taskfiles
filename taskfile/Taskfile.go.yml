@@ -31,6 +31,11 @@ tasks:
     cmds:
       - go test -v ./...
 
+  test/coverage:
+    cmds:
+      - go test ./... -count=1 -coverpkg=./... -covermode=set -coverprofile cover.out
+      - go tool cover -func=cover.out | tail -n 1 > total-statements-coverage
+
 
   lint/check:
     cmds:
@@ -44,7 +49,7 @@ tasks:
     deps: [ common:bin ]
     cmds:
       - for: { var: BINARIES_NAME }
-        cmd: touch {{.USER_WORKING_DIR}}/bin/{{.ITEM}}.zip
+        cmd: touch {{.USER_WORKING_DIR}}/bin/{{.KEY}}.zip
 
   artifact/deliver:
     cmds:
