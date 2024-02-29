@@ -1,0 +1,54 @@
+version: '3'
+
+internal: true
+
+
+includes:
+  common:
+    taskfile: ./Taskfile.common.yml
+    vars:
+      EXTENSION: js
+      FOLDER: dist
+    internal: true
+
+tasks:
+  build:
+    deps: [ common:bin ]
+    requires:
+      vars: [ BINARIES_NAME ]
+    cmds:
+      - pnpm run build
+
+  test:
+    cmds:
+      - pnpm run test
+
+  test/coverage:
+    cmds:
+      - pnpm run test/coverage
+
+  lint/check:
+    cmds:
+      - pnpm run lint/check
+
+  lint/format:
+    cmds:
+      - pnpm run lint/format
+
+  artifact/mock:
+    deps: [ common:bin ]
+    cmds:
+      - for: { var: BINARIES_NAME }
+        cmd: touch {{.USER_WORKING_DIR}}/dist/{{.ITEM}}.js
+
+  artifact/deliver:
+    cmds:
+      - for: { var: BINARIES_NAME }
+        task: common:artifact/deliver
+        vars: { BINARY_NAME: "{{.ITEM}}" }
+
+  artifact/retrieve:
+    cmds:
+      - for: { var: BINARIES_NAME }
+        task: common:artifact/retrieve
+        vars: { BINARY_NAME: "{{.ITEM}}" }
