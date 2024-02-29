@@ -9,7 +9,6 @@ includes:
   common:
     taskfile: ./Taskfile.common.yml
     internal: true
-
 tasks:
   build:
     deps: [ common:ecr-login, common:bin ]
@@ -52,8 +51,12 @@ tasks:
 
   artifact/deliver:
     cmds:
-      - task: common:artifact/deliver
+      - for: { var: BINARIES_NAME }
+        task: common:artifact/deliver
+        vars: { BINARY_NAME: "{{.ITEM}}" }
 
   artifact/retrieve:
     cmds:
-      - task: common:artifact/retrieve
+      - for: { var: BINARIES_NAME }
+        task: common:artifact/retrieve
+        vars: { BINARY_NAME: "{{.ITEM}}" }

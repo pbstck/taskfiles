@@ -1,21 +1,17 @@
 version: '3'
 
-internal: true
+internal: false
 
 tasks:
   artifact/deliver:
     requires:
-      vars: [BINARIES_NAME, PROJECT, GIT_REVISION]
-    cmds:
-      - for : { var: BINARIES_NAME }
-        cmd: aws s3 cp {{.ROOT_DIR}}/bin/{{.ITEM}}.zip s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.ITEM}}-{{.GIT_REVISION}}.zip
+      vars: [BINARY_NAME, PROJECT, GIT_REVISION]
+    cmd: aws s3 cp {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.GIT_REVISION}}.zip
 
   artifact/retrieve:
     requires:
-      vars: [BINARIES_NAME, PROJECT, GIT_REVISION]
-    cmds:
-      - for : { var: BINARIES_NAME }
-        cmd: aws s3 cp s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.ITEM}}-{{.GIT_REVISION}}.zip {{.ROOT_DIR}}/bin/{{.ITEM}}.zip
+      vars: [BINARY_NAME, PROJECT, GIT_REVISION]
+    cmd: aws s3 cp s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.GIT_REVISION}}.zip {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip
 
 
   ecr-login:
