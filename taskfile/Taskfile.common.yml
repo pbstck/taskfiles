@@ -1,6 +1,6 @@
 version: '3'
 
-internal: false
+internal: true
 
 tasks:
   artifact/deliver:
