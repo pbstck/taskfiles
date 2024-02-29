@@ -1,4 +1,4 @@
-name: Update aws-lib in all RUST projects
+name: Update taskfiles in all projects
 
 on:
   workflow_dispatch:
@@ -16,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        project: [ browser-tracing ]
+        project: [ browser-tracing, gam-crawler, intake ]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
