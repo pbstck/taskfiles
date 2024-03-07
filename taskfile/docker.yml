@@ -2,10 +2,16 @@ version: '3'
 
 internal: true
 
+vars:
+  REMOTE_URL: https://raw.githubusercontent.com/pbstck/taskfiles/v1/taskfile
+
+
 includes:
   common:
-    taskfile: ./Taskfile.common.yml
+    # we can switch to local files when this is releases: https://github.com/go-task/task/pull/1347
+    taskfile: '{{.REMOTE_URL}}/common.yml
     internal: true
+
 tasks:
   deliver:
     deps: [common:ecr-login]
