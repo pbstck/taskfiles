@@ -29,10 +29,11 @@ tasks:
 
   next_upgrade:
     cmds:
-      - ./scripts/next_upgrade.sh
+      - cat ./next_upgrade.md
 
   tag:
     silent: true
+    prompt: 'Did you read the next_upgrade ?'
     deps: [next_upgrade]
     requires:
       vars: [STAGE]
