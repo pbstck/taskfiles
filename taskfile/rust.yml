@@ -4,11 +4,15 @@ internal: true
 
 vars:
   RUST_WORKSPACE_DIR: "{{.ROOT_DIR}}/code/rust"
+  REMOTE_URL: https://raw.githubusercontent.com/pbstck/taskfiles/v1/taskfile
+
 
 includes:
+  # we can switch to local files when this is releases: https://github.com/go-task/task/pull/1347
   common:
-    taskfile: ./Taskfile.common.yml
+    taskfile: '{{.REMOTE_URL}}/common.yml'
     internal: true
+
 tasks:
   build:
     deps: [ common:ecr-login, common:bin ]
