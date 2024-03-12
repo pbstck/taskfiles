@@ -2,16 +2,21 @@ version: '3'
 
 internal: true
 
+vars:
+  EXTENSION: '{{default "zip" .EXTENSION}}'
+  FOLDER: '{{default "bin" .FOLDER}}'
+  SUFFIX: '{{default ".GIT_REVISION" .SUFFIX}}'
+
 tasks:
   artifact/deliver:
     requires:
-      vars: [BINARY_NAME, PROJECT, GIT_REVISION]
-    cmd: aws s3 cp {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.GIT_REVISION}}.zip
+      vars: [BINARY_NAME, PROJECT]
+      cmd: aws s3 cp {{.ROOT_DIR}}/{{.FOLDER}}/{{.BINARY_NAME}}.{{.EXTENSION}} s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.SUFFIX}}.{{.EXTENSION}}
 
   artifact/retrieve:
     requires:
-      vars: [BINARY_NAME, PROJECT, GIT_REVISION]
-    cmd: aws s3 cp s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.GIT_REVISION}}.zip {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip
+      vars: [BINARY_NAME, PROJECT]
+      cmd: aws s3 cp s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.SUFFIX}}.{{.EXTENSION}} {{.ROOT_DIR}}/{{.FOLDER}}/{{.BINARY_NAME}}.{{.EXTENSION}}
 
 
   ecr-login:
@@ -23,7 +28,7 @@ tasks:
   bin:
     run: once
     cmds:
-      - mkdir -p {{.ROOT_DIR}}/bin
+      - mkdir -p {{.ROOT_DIR}}/{{.FOLDER}}
 
 
 

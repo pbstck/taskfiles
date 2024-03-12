@@ -11,6 +11,8 @@ includes:
     # we can switch to local files when this is releases: https://github.com/go-task/task/pull/1347
     taskfile: '{{.INCLUDED_REMOTE_URL}}/common.yml'
     internal: true
+    vars:
+      SUFFIX: truc
 tasks:
   build:
     deps: [ common:bin ]
