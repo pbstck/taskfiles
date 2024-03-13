@@ -5,13 +5,13 @@ internal: true
 vars:
   EXTENSION: '{{default "zip" .EXTENSION}}'
   FOLDER: '{{default "bin" .FOLDER}}'
-  SUFFIX: '{{default ".GIT_REVISION" .SUFFIX}}'
+  SUFFIX: '{{default .GIT_REVISION .SUFFIX}}'
 
 tasks:
   artifact/deliver:
     requires:
       vars: [BINARY_NAME, PROJECT]
-      cmd: aws s3 cp {{.ROOT_DIR}}/{{.FOLDER}}/{{.BINARY_NAME}}.{{.EXTENSION}} s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.SUFFIX}}.{{.EXTENSION}}
+    cmd: aws s3 cp {{.ROOT_DIR}}/{{.FOLDER}}/{{.BINARY_NAME}}.{{.EXTENSION}} s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.SUFFIX}}.{{.EXTENSION}}
 
   artifact/retrieve:
     requires:
