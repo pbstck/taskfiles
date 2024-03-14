@@ -30,15 +30,22 @@ tasks:
     cmds:
       - mkdir -p {{.ROOT_DIR}}/{{.FOLDER}}
 
-
-
   next_upgrade:
     cmds:
-      - ./scripts/next_upgrade.sh
+      - cat ./next_upgrade.md
 
   tag:
+    requires:
+      vars: [ STAGE ]
+    cmds:
+      - task: next_upgrade
+      - task: _tag
+        vars: { STAGE: "{{.STAGE}}" }
+
+
+  _tag:
     silent: true
-    deps: [next_upgrade]
+    prompt: 'Did you read the next_upgrade ?'
     requires:
       vars: [STAGE]
     vars:
