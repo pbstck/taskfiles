@@ -5,7 +5,6 @@ internal: true
 vars:
   RUST_WORKSPACE_DIR: "{{.ROOT_DIR}}/code/rust"
   INCLUDED_REMOTE_URL: https://raw.githubusercontent.com/pbstck/taskfiles/v1/taskfile
-  PROJECT_DIR: '{{default "." .PROJECT_DIR}}'
 
 includes:
   # we can switch to local files when this is releases: https://github.com/go-task/task/pull/1347
@@ -28,8 +27,7 @@ tasks:
       - cargo test
 
   test/coverage:
-    dir: '{{.RUST_WORKSPACE_DIR}}/{{.PROJECT_DIR}}'
-    cmd: cargo tarpaulin --output-dir {{.PROJECT_DIR}} --out Xml --lib  --skip-clean
+    cmd: cargo tarpaulin --output-dir {{.TASKFILE_DIR}} --out Xml --lib  --skip-clean
 
 
   lint/check:
