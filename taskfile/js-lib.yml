@@ -22,7 +22,7 @@ tasks:
     requires:
       vars: [ BINARIES_NAME ]
     cmds:
-      - pnpm run build
+      - pnpm run build {{.CLI_ARGS}}
 
   test:
     cmds:
