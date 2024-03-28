@@ -15,7 +15,7 @@ tasks:
       - terraform plan -var git_revision={{.GIT_REVISION}} -out={{.PLAN_PATH}} {{.ADDITIONAL_VARIABLE}}
   terraform/apply:
     requires:
-      vars: [ STAGE ]
+      vars: [STAGE]
     cmds:
       - echo "planning project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
       - terraform init -reconfigure
