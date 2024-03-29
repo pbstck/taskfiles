@@ -1,0 +1,59 @@
+version: '3'
+
+internal: true
+
+
+vars:
+  INCLUDED_REMOTE_URL: https://raw.githubusercontent.com/pbstck/taskfiles/v1/taskfile
+
+
+includes:
+  common:
+    # we can switch to local files when this is releases: https://github.com/go-task/task/pull/1347
+    taskfile: '{{.INCLUDED_REMOTE_URL}}/common.yml'
+    internal: true
+
+tasks:
+  build:
+    deps: [ common:bin ]
+    requires:
+      vars: [ BINARIES_NAME ]
+    cmds:
+      - pnpm run build
+      - for: { var: BINARIES_NAME }
+        cmd: zip -q -r bin/{{.ITEM}}.zip ./bin
+
+
+  test:
+    cmds:
+      - pnpm run test
+
+  test/coverage:
+    cmds:
+      - pnpm run test/coverage
+
+  lint/check:
+    cmds:
+      - pnpm run lint/check
+
+  lint/format:
+    cmds:
+      - pnpm run lint/format
+
+  artifact/mock:
+    deps: [ common:bin ]
+    cmds:
+      - for: { var: BINARIES_NAME }
+        cmd: touch {{.ROOT_DIR}}/bin/{{.ITEM}}.zip
+
+  artifact/deliver:
+    cmds:
+      - for: { var: BINARIES_NAME }
+        task: common:artifact/deliver
+        vars: { BINARY_NAME: "{{.ITEM}}" }
+
+  artifact/retrieve:
+    cmds:
+      - for: { var: BINARIES_NAME }
+        task: common:artifact/retrieve
+        vars: { BINARY_NAME: "{{.ITEM}}" }
