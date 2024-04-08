@@ -18,7 +18,6 @@ tasks:
       vars: [BINARY_NAME, PROJECT]
     cmd: aws s3 cp s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.SUFFIX}}.{{.EXTENSION}} {{.ROOT_DIR}}/{{.FOLDER}}/{{.BINARY_NAME}}.{{.EXTENSION}}
 
-
   ecr-login:
     run: once
     internal: true
@@ -37,20 +36,20 @@ tasks:
   tag:
     requires:
       vars: [ STAGE ]
+    vars:
+      LIB: '{{default false .LIB}}' # Set to true if you want to tag a library (tag format will be v1.yyyymmdd.hhmm)
+      TAG:
+        sh: '{{if eq .LIB "false"}} TZ=ETC/UTC date +%Y-%m-%dT%H-%M-%SZ-{{.STAGE}} {{else}} echo "v1".`TZ=ETC/UTC date +%Y%m%d`.`TZ=ETC/UTC date +%-H%M` {{end}}'
     cmds:
       - task: next_upgrade
       - task: _tag
-        vars: { STAGE: "{{.STAGE}}" }
-
+        vars: { STAGE: "{{.STAGE}}", TAG : "{{.TAG}}" }
 
   _tag:
-    silent: true
+    silent: false
     prompt: 'Did you read the next_upgrade ?'
     requires:
-      vars: [STAGE]
-    vars:
-      TAG:
-        sh: TZ=ETC/UTC date +%Y-%m-%dT%H-%M-%SZ-{{.STAGE}}
+      vars: [STAGE, TAG]
     cmds:
       - git tag {{.TAG}}
       - echo "DONT FORGET TO 'git push origin {{.TAG}}'"
