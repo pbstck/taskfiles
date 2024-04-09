@@ -35,6 +35,6 @@ tasks:
     requires:
       vars: [BINARY_NAME, GIT_REVISION, PATH]
     cmds:
-      - unzip {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip
+      - test -f {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip && unzip {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip
       - docker build -t 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.BINARY_NAME}}:{{.GIT_REVISION}} -f {{.PATH}} .
-      - rm ./bootstrap
+      - rm -f ./bootstrap
