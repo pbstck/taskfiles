@@ -5,7 +5,7 @@ internal: true
 vars:
   RUST_WORKSPACE_DIR: "{{.ROOT_DIR}}/code/rust"
   INCLUDED_REMOTE_URL: https://raw.githubusercontent.com/pbstck/taskfiles/v1/taskfile
-  TEST_OUTPUT_DIR: '{{default "." .TEST_OUTPUT_DIR}}'
+  TEST_OUTPUT_DIR: '{{.TEST_OUTPUT_DIR } | default "." }}'
 
 includes:
   # we can switch to local files when this is releases: https://github.com/go-task/task/pull/1347

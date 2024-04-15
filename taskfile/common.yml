@@ -3,9 +3,9 @@ version: '3'
 internal: true
 
 vars:
-  EXTENSION: '{{default "zip" .EXTENSION}}'
-  FOLDER: '{{default "bin" .FOLDER}}'
-  SUFFIX: '{{default .GIT_REVISION .SUFFIX}}'
+  EXTENSION: '{{.EXTENSION | default "zip"}}'
+  FOLDER: '{{.FOLDER | default "bin"}}'
+  SUFFIX: '{{.SUFFIX | default .GIT_REVISION}}'
 
 tasks:
   artifact/deliver:
@@ -37,7 +37,7 @@ tasks:
     requires:
       vars: [ STAGE ]
     vars:
-      LIB: '{{default false .LIB}}' # Set to true if you want to tag a library (tag format will be v1.yyyymmdd.hhmm)
+      LIB: '{{.LIB | default false}}' # Set to true if you want to tag a library (tag format will be v1.yyyymmdd.hhmm)
       TAG:
         sh: '{{if eq .LIB "false"}} TZ=ETC/UTC date +%Y-%m-%dT%H-%M-%SZ-{{.STAGE}} {{else}} echo "v1".`TZ=ETC/UTC date +%Y%m%d`.`TZ=ETC/UTC date +%-H%M` {{end}}'
     cmds:
