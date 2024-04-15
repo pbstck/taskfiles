@@ -2,14 +2,9 @@ version: '3'
 
 internal: true
 
-vars:
-  INCLUDED_REMOTE_URL: https://raw.githubusercontent.com/pbstck/taskfiles/v1/taskfile
-
-
 includes:
   common:
-    # we can switch to local files when this is releases: https://github.com/go-task/task/pull/1347
-    taskfile: '{{.INCLUDED_REMOTE_URL}}/common.yml'
+    taskfile: common.yml
     internal: true
 
 tasks:
