@@ -13,7 +13,6 @@ includes:
     taskfile: '{{.INCLUDED_REMOTE_URL}}/common.yml'
     internal: true
     vars:
-      EXTENSION: js
       FOLDER: dist
 
 tasks:
@@ -50,10 +49,10 @@ tasks:
     cmds:
       - for: { var: BINARIES_NAME }
         task: common:artifact/deliver
-        vars: { BINARY_NAME: "{{.ITEM}}" }
+        vars: { BINARY_NAME: "{{.KEY}}", EXTENSION: "{{.ITEM}}" }
 
   artifact/retrieve:
     cmds:
       - for: { var: BINARIES_NAME }
         task: common:artifact/retrieve
-        vars: { BINARY_NAME: "{{.ITEM}}" }
+        vars: { BINARY_NAME: "{{.KEY}}", EXTENSION: "{{.ITEM}}" }
