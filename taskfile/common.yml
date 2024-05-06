@@ -1,6 +1,7 @@
 version: '3'
 
 internal: true
+silent: true
 
 vars:
   EXTENSION: '{{.EXTENSION | default "zip"}}'
