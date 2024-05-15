@@ -15,7 +15,7 @@ tasks:
     cmds:
       - pnpm run build
       - for: { var: BINARIES_NAME }
-        cmd: zip -q -r bin/{{.ITEM}}.zip ./bin
+        cmd: zip -q -r bin/{{.ITEM}}.zip ./bin/{{.ITEM}}
 
 
   test:
