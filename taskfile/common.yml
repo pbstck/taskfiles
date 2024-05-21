@@ -47,10 +47,13 @@ tasks:
         vars: { STAGE: "{{.STAGE}}", TAG : "{{.TAG}}" }
 
   _tag:
-    silent: false
+    vars:
+      hasXsel:
+        sh: 'command -v xsel'
     prompt: 'Did you read the next_upgrade ?'
     requires:
       vars: [STAGE, TAG]
     cmds:
       - git tag {{.TAG}}
+      - '{{if .hasXsel}}echo "git push origin {{.TAG}}" | xsel --clipboard{{end}}'
       - echo "DONT FORGET TO 'git push origin {{.TAG}}'"
