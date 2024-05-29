@@ -49,9 +49,9 @@ tasks:
   _tag:
     vars:
       hasXsel:
-        sh: 'command -v xsel'
+        sh: 'command -v xsel || true'
       hasPbcopy:
-        sh: 'command -v pbcopy'
+        sh: 'command -v pbcopy || true'
     prompt: 'Did you read the next_upgrade ?'
     requires:
       vars: [STAGE, TAG]
