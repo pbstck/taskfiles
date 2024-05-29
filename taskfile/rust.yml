@@ -32,14 +32,22 @@ tasks:
 
 
   lint/check:
+    preconditions:
+      - sh: command -v cargo-shear
+        msg: "Please install cargo-shear by running `cargo install cargo-shear`"
     cmds:
       - cargo fmt -- --check
       - cargo clippy -- -D warnings
+      - cargo shear
 
   lint/format:
+    preconditions:
+      - sh: command -v cargo-shear
+        msg: "Please install cargo-shear by running `cargo install cargo-shear`"
     cmds:
       - cargo fmt
       - cargo clippy -- -D warnings
+      - cargo shear --fix
 
 
   artifact/mock:
