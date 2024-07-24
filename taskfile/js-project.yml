@@ -15,7 +15,7 @@ tasks:
     cmds:
       - pnpm run build
       - for: { var: BINARIES_NAME }
-        cmd: cd ./bin/{{.ITEM}} && zip -q -r ../{{.ITEM}}.zip ./
+        cmd: cd dist && pwd && zip -r {{.ROOT_DIR}}/bin/{{.ITEM}}.zip ./index.mjs
 
 
   test:
