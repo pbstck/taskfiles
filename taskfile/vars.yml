@@ -2,6 +2,6 @@ version: '3'
 
 vars:
   PROJECT:
-    sh : basename "$PWD"
+    sh : basename "{{.ROOT_DIR}}"
   GIT_REVISION:
     sh : if [[ -n ${CI} ]]; then echo ${GITHUB_SHA} | cut -c1-7; else git rev-parse --short HEAD; fi
