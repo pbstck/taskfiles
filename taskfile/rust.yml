@@ -15,7 +15,7 @@ includes:
 
 tasks:
   build:
-    deps: [ common:ecr-login, common:bin ]
+    deps: [ common:bin ]
     requires:
       vars: [ BINARIES_NAME, RUST_WORKSPACE_DIR ]
     cmds:
