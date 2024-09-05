@@ -1,5 +1,5 @@
 # template
-
+test
 This is a template used to create a new repository
 
 :warning: DO NOT USE IT DIRECTLY BUT USE THE MANUAL WORKFLOW LOCATED [HERE](https://github.com/pbstck/pubstack/actions/workflows/create-repository.yaml) :warning:
