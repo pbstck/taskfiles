@@ -1,0 +1,94 @@
+version: '3'
+
+includes:
+  common:
+    taskfile: common.yml
+    internal: true
+
+tasks:
+  test:
+    cmds:
+      - for: { var: ALL_PROJECTS }
+        task: '{{.ITEM}}:test'
+
+  build:
+    cmds:
+      - for: { var: ALL_PROJECTS }
+        task: '{{.ITEM}}:build'
+
+  lint/check:
+    cmds:
+      - for: { var: ALL_PROJECTS }
+        task: '{{.ITEM}}:lint/check'
+      - task: infra:lint/check
+
+  lint/format:
+    cmds:
+      - for: { var: ALL_PROJECTS }
+        task: '{{.ITEM}}:lint/format'
+      - task: infra:lint/format
+
+  tag/beta:
+    cmds:
+      - task: common:tag
+        vars: { STAGE: beta }
+
+  tag/prod:
+    cmds:
+      - task: common:tag
+        vars: { STAGE: prod }
+
+  plan:
+    internal: true
+    deps: [ artifacts/retrieve ]
+    cmd:
+      task: infra:terraform/plan
+      vars: { STAGE: '{{.STAGE}}' }
+
+  plan/dev:
+    cmd:
+      task: plan
+      vars: { STAGE: dev }
+
+  plan/beta:
+    cmd:
+      task: plan
+      vars: { STAGE: beta }
+  plan/prod:
+    cmd:
+      task: plan
+      vars: { STAGE: prod }
+
+  deploy:
+    deps: [ artifacts/retrieve ]
+    cmd:
+      task: infra:terraform/apply
+      vars: { STAGE: '{{.STAGE}}' }
+
+  deploy/dev:
+    cmd:
+      task: deploy
+      vars: { STAGE: dev }
+  deploy/beta:
+    cmd:
+      task: deploy
+      vars: { STAGE: beta }
+  deploy/prod:
+    cmd:
+      task: deploy
+      vars: { STAGE: prod }
+
+  artifacts/deliver:
+    cmds:
+      - for: { var: ALL_PROJECTS }
+        task: '{{.ITEM}}:artifact/deliver'
+
+  artifacts/retrieve:
+    cmds:
+      - for: { var: ALL_PROJECTS }
+        task: '{{.ITEM}}:artifact/retrieve'
+
+  artifacts/mock:
+    cmds:
+      - for: { var: ALL_PROJECTS }
+        task: '{{.ITEM}}:artifact/mock'
