@@ -92,3 +92,4 @@ tasks:
     cmds:
       - for: { var: ALL_PROJECTS }
         task: '{{.ITEM}}:artifact/mock'
+
