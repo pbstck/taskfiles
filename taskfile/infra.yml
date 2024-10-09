@@ -16,7 +16,6 @@ tasks:
       - echo "planning project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
       - terraform init -reconfigure
       - terraform workspace select -or-create {{.STAGE}}
-      - terraform init -reconfigure
       - terraform plan -var git_revision={{.GIT_REVISION}} -out={{.PLAN_PATH}} {{.ADDITIONAL_VARIABLE}}
   terraform/apply:
     requires:
@@ -25,7 +24,6 @@ tasks:
       - echo "planning project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
       - terraform init -reconfigure
       - terraform workspace select -or-create {{.STAGE}}
-      - terraform init -reconfigure
       - terraform apply {{.PLAN_PATH}}
 
   lint/check:
