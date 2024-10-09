@@ -93,6 +93,7 @@ tasks:
     cmd: cat ./next_upgrade.md
 
   tag:
+    silent: true
     internal: true
     requires:
       vars: [ STAGE ]
@@ -106,6 +107,7 @@ tasks:
         vars: { STAGE: "{{.STAGE}}", TAG: "{{.TAG}}" }
 
   _tag:
+    silent: true
     internal: true
     vars:
       hasXsel:
