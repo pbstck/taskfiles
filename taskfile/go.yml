@@ -22,7 +22,7 @@ tasks:
     requires:
       vars: [ BINARY_NAME, PATH ]
     cmds:
-      - GOOS=linux {{.BUILD_PREFIX}}  go build -ldflags="-s -w" -tags lambda.norpc -o bootstrap {{.PATH}}
+      - GOOS=linux {{.BUILD_PREFIX}} {{if .ARM}} GOARCH=arm64 {{end}}  go build -ldflags="-s -w" -tags lambda.norpc -o bootstrap {{.PATH}}
       - zip -r9 {{.USER_WORKING_DIR}}/bin/{{.BINARY_NAME}}.zip ./bootstrap
       - rm ./bootstrap
 
