@@ -17,14 +17,14 @@ tasks:
   build:
     vars:
       BUILDER: '{{if .ARM}} cross {{else}} cargo {{end}}'
-      TARGET: '{{if .ARM}} aarch64-unknown-linux-gnu {{else}} x86_64-unknown-linux-gnu {{end}}'
+      TARGET: '{{if .ARM}}aarch64-unknown-linux-gnu{{else}}x86_64-unknown-linux-gnu{{end}}'
     deps: [ common:bin ]
     requires:
       vars: [ BINARIES_NAME, RUST_WORKSPACE_DIR ]
     cmds:
       - '{{.BUILDER}} build --target {{.TARGET}} --release --bin {{ .BINARIES_NAME | replace " " " --bin "}}'
       - for: { var: BINARIES_NAME }
-        cmd: cp {{.RUST_WORKSPACE_DIR}}/target/x86_64-unknown-linux-gnu/release/{{.ITEM}} ./bootstrap && zip -r {{.ROOT_DIR}}/bin/{{.ITEM}}.zip ./bootstrap
+        cmd: cp {{.RUST_WORKSPACE_DIR}}/target/{{.TARGET}}/release/{{.ITEM}} ./bootstrap && zip -r {{.ROOT_DIR}}/bin/{{.ITEM}}.zip ./bootstrap
 
   test:
     cmds:
