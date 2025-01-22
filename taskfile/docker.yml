@@ -14,7 +14,7 @@ tasks:
       vars: [BINARIES_NAME, GIT_REVISION]
     cmds:
       - for: { var: BINARIES_NAME }
-        cmd: docker push 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.KEY}}:{{.GIT_REVISION}}
+        cmd: docker push 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.KEY}}{{if .ARM}}_arm{{end}}:{{.GIT_REVISION}}
 
   build:
     deps: [common:ecr-login]
@@ -31,5 +31,5 @@ tasks:
       vars: [BINARY_NAME, GIT_REVISION, PATH]
     cmds:
       - if [ -f {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip ]; then unzip {{.ROOT_DIR}}/bin/{{.BINARY_NAME}}.zip; fi
-      - docker build -t 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.BINARY_NAME}}:{{.GIT_REVISION}} -f {{.PATH}} .
+      - docker {{if .ARM}}buildx{{end}} build {{if .ARM}} --platform linux/arm64/v8 {{end}} -t 563565546264.dkr.ecr.eu-west-1.amazonaws.com/{{.BINARY_NAME}}{{if .ARM}}_arm{{end}}:{{.GIT_REVISION}} -f {{.PATH}} .
       - rm -f ./bootstrap
