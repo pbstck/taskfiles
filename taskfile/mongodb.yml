@@ -1,0 +1,46 @@
+version: 3
+
+vars:
+  MONGODB_URI_MAP:
+    map:
+      dev: mongodb+srv://dev.qcvdrdn.mongodb.net
+      beta: mongodb+srv://beta.phl0fde.mongodb.net
+      prod: mongodb+srv://prod.gvqtr.mongodb.net
+
+tasks:
+  run:
+    internal: true
+    env:
+      AWS_PROFILE: pubstackmaster
+    preconditions:
+      - sh: command -v mongosh
+        msg: "MongoDB shell (mongosh) is not installed. Please install it."
+    requires:
+      vars:
+        - name: ENV
+          enum: [ dev, beta, prod ]
+        - RUN
+    prompt: "Do you want to run {{.RUN}} for {{.ENV}} environment? "
+    cmds:
+      - mongosh "{{index .MONGODB_URI_MAP .ENV}}/pubstack?authSource=%24external" --authenticationMechanism MONGODB-AWS {{.RUN}}
+
+  run-command:
+    requires:
+        vars:
+          - COMMAND
+    cmds:
+        - task: run
+          vars:
+            RUN: '--eval "{{.COMMAND}}"'
+            ENV: '{{.ENV}}'
+  run-files:
+    requires:
+        vars:
+            - FILE
+    cmds:
+        - task: run
+          vars:
+            RUN: '--file {{.FILE}}'
+            ENV: '{{.ENV}}'
+
+
