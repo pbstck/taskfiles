@@ -1,4 +1,8 @@
 version: '3'
+
+includes:
+  mongodb:
+    taskfile: mongodb.yml
 tasks:
   test:
     cmds:
