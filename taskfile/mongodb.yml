@@ -1,0 +1,63 @@
+version: 3
+
+vars:
+  MONGODB_URI_MAP:
+    map:
+      dev: mongodb+srv://dev.qcvdrdn.mongodb.net
+      beta: mongodb+srv://beta.phl0fde.mongodb.net
+      prod: mongodb+srv://prod.gvqtr.mongodb.net
+
+tasks:
+  run:
+    desc: |
+        Run a command on the MongoDB database.
+        This task requires the MongoDB shell (mongosh) to be installed.
+        The command will be run on the specified environment (dev, beta, prod).
+    internal: true
+    env:
+      AWS_PROFILE: pubstackmaster
+    preconditions:
+      - sh: command -v mongosh
+        msg: "MongoDB shell (mongosh) is not installed. Please install it."
+    requires:
+      vars:
+        - name: ENV
+          enum: [ dev, beta, prod ]
+        - RUN
+    prompt: "Do you want to run {{.RUN}} for {{.ENV}} environment? "
+    cmds:
+      - mongosh "{{index .MONGODB_URI_MAP .ENV}}/pubstack?authSource=%24external" --authenticationMechanism MONGODB-AWS {{.RUN}}
+
+  run-command:
+    desc: |
+        Run a command on the MongoDB database.
+        This task requires the MongoDB shell (mongosh) to be installed.
+        The command will be run on the specified environment (dev, beta, prod).
+        Example: task run-command ENV=dev COMMAND='db.app_reports.updateMany({templateName:"SSPs Incremental Time"},{$set:{templateName:"Ad Speed & Latency"}})'
+    requires:
+        vars:
+          - COMMAND
+    cmds:
+        - task: run
+          vars:
+            RUN: '--eval {{.COMMAND | squote }}'
+            ENV: '{{.ENV}}'
+  run-files:
+    desc: |
+        Run a command on the MongoDB database.
+        This task requires the MongoDB shell (mongosh) to be installed.
+        The command will be run on the specified environment (dev, beta, prod).
+        Example: task run-files ENV=dev FILE=report.js
+        report.js can be something like:
+        printjson(db.app_reports.updateMany({templateName:"SSPs Incremental Time"},{$set:{templateName:"Ad Speed & Latency"}}))
+        You can write any javascript in this file. It'll be executed in the context of the MongoDB shell.
+    requires:
+        vars:
+            - FILE
+    cmds:
+        - task: run
+          vars:
+            RUN: '--file {{.FILE}}'
+            ENV: '{{.ENV}}'
+
+
