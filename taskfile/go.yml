@@ -27,12 +27,19 @@ tasks:
       - rm ./bootstrap
 
   test:
+    preconditions:
+      - sh: command -v gotestsum
+        msg: "gotestsum is not installed, please install it to run tests"
+    vars:
+        GOTESTSUM_FORMAT: '{{if .CI}}github-actions{{else}}testname{{end}}'
     cmds:
-      - go test -v ./...
+      - gotestsum -f '{{.GOTESTSUM_FORMAT}}' {{.CLI_ARGS}}
 
   test/coverage:
     cmds:
-      - go test ./... -count=1 -coverpkg=./... -covermode=set -coverprofile cover.out
+      - task: test
+        vars:
+          CLI_ARGS: './... -count=1 -coverpkg=./... -covermode=set -coverprofile cover.out'
       - go tool cover -func=cover.out | tail -n 1 > total-statements-coverage
 
   lint/check:
