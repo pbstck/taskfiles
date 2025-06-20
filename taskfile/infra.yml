@@ -15,6 +15,7 @@ tasks:
     requires:
       vars: [STAGE]
     cmds:
+      - '{{if not .CI}}export AWS_PROFILE="pubstacktool"{{end}}'
       - echo "planning project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
       - terraform init -reconfigure
       - terraform workspace select -or-create {{.STAGE}}
@@ -23,6 +24,7 @@ tasks:
     requires:
       vars: [STAGE]
     cmds:
+      - '{{if not .CI}}export AWS_PROFILE="pubstacktool"{{end}}'
       - echo "planning project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
       - terraform init -reconfigure
       - terraform workspace select -or-create {{.STAGE}}
