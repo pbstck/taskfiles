@@ -9,7 +9,7 @@ vars:
 
 tasks:
   run:
-    desc: |
+    summary: |
         Run a command on the MongoDB database.
         This task requires the MongoDB shell (mongosh) to be installed.
         The command will be run on the specified environment (dev, beta, prod).
@@ -29,7 +29,7 @@ tasks:
       - mongosh "{{index .MONGODB_URI_MAP .ENV}}/pubstack?authSource=%24external" --authenticationMechanism MONGODB-AWS {{.RUN}}
 
   run-command:
-    desc: |
+    summary: |
         Run a command on the MongoDB database.
         This task requires the MongoDB shell (mongosh) to be installed.
         The command will be run on the specified environment (dev, beta, prod).
@@ -43,7 +43,7 @@ tasks:
             RUN: '--eval {{.COMMAND | squote }}'
             ENV: '{{.ENV}}'
   run-files:
-    desc: |
+    summary: |
         Run a command on the MongoDB database.
         This task requires the MongoDB shell (mongosh) to be installed.
         The command will be run on the specified environment (dev, beta, prod).
