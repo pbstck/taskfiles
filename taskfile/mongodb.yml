@@ -60,4 +60,29 @@ tasks:
             RUN: '--file {{.FILE}}'
             ENV: '{{.ENV}}'
 
+  copy-prod-to-dev:
+    cmds:
+      - task: dump-prod
+      - task: restore-dev
+
+
+  dump-prod:
+    vars:
+      AWS_ACCESS_KEY:
+        sh: aws configure get aws_access_key_id  --profile pubstackmaster
+      AWS_SECRET_KEY:
+        sh: aws configure get aws_secret_access_key --profile pubstackmaster
+    cmds:
+      - mongodump --uri="mongodb+srv://{{.AWS_ACCESS_KEY}}:{{.AWS_SECRET_KEY}}@prod.gvqtr.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&appName=prod" --db=pubstack --excludeCollection=app_audit
+
+
+  restore-dev:
+    vars:
+      AWS_ACCESS_KEY:
+        sh: aws configure get aws_access_key_id  --profile pubstackmaster
+      AWS_SECRET_KEY:
+        sh: aws configure get aws_secret_access_key --profile pubstackmaster
+    cmds:
+      - mongorestore --uri="mongodb+srv://{{.AWS_ACCESS_KEY}}:{{.AWS_SECRET_KEY}}@dev.qcvdrdn.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&appName=dev" --db=pubstack_prod dump/pubstack
+
 
