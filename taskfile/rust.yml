@@ -22,7 +22,7 @@ tasks:
     requires:
       vars: [ BINARIES_NAME, RUST_WORKSPACE_DIR ]
     cmds:
-      - '{{.BUILDER}} build --target {{.TARGET}} --release --bin {{ .BINARIES_NAME | replace " " " --bin "}}'
+      - '{{.BUILDER}} build --target {{.TARGET}} {{.IS_RELEASE}}--release{{end}} --bin {{ .BINARIES_NAME | replace " " " --bin "}}'
       - for: { var: BINARIES_NAME }
         cmd: cp {{.RUST_WORKSPACE_DIR}}/target/{{.TARGET}}/release/{{.ITEM}} ./bootstrap && zip -r {{.ROOT_DIR}}/bin/{{.ITEM}}.zip ./bootstrap
 
