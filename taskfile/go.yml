@@ -35,35 +35,35 @@ tasks:
     cmds:
       - gotestsum -f '{{.GOTESTSUM_FORMAT}}' {{.CLI_ARGS}}
 
-  test/coverage:
+  test:coverage:
     cmds:
       - task: test
         vars:
           CLI_ARGS: './... -count=1 -coverpkg=./... -covermode=set -coverprofile cover.out'
       - go tool cover -func=cover.out | tail -n 1 > total-statements-coverage
 
-  lint/check:
+  lint:check:
     cmds:
       - gofmt -l -s ./ && [ -z "$(gofmt -l -s ./)" ]
 
-  lint/format:
+  lint:format:
     cmds:
       - gofmt -l -s -w ./
 
-  artifact/mock:
+  artifact:mock:
     deps: [ common:bin ]
     cmds:
       - for: { var: BINARIES_NAME }
         cmd: touch {{.USER_WORKING_DIR}}/bin/{{.KEY}}.zip
 
-  artifact/deliver:
+  artifact:deliver:
     cmds:
       - for: { var: BINARIES_NAME }
-        task: common:artifact/deliver
+        task: common:artifact:deliver
         vars: { BINARY_NAME: "{{.KEY}}" }
 
-  artifact/retrieve:
+  artifact:retrieve:
     cmds:
       - for: { var: BINARIES_NAME }
-        task: common:artifact/retrieve
+        task: common:artifact:retrieve
         vars: { BINARY_NAME: "{{.KEY}}" }

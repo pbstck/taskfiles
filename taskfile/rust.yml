@@ -30,35 +30,35 @@ tasks:
     cmds:
       - cargo test
 
-  test/coverage:
+  test:coverage:
     cmd: cargo tarpaulin --output-dir {{.TEST_OUTPUT_DIR}} --out Xml --lib  --skip-clean
 
 
-  lint/check:
+  lint:check:
     cmds:
       - cargo fmt -- --check
       - cargo clippy -- -D warnings
 
-  lint/format:
+  lint:format:
     cmds:
       - cargo fmt
       - cargo clippy -- -D warnings
 
 
-  artifact/mock:
+  artifact:mock:
     deps: [ common:bin ]
     cmds:
       - for: { var: BINARIES_NAME }
         cmd: touch {{.ROOT_DIR}}/bin/{{.ITEM}}.zip
 
-  artifact/deliver:
+  artifact:deliver:
     cmds:
       - for: { var: BINARIES_NAME }
-        task: common:artifact/deliver
+        task: common:artifact:deliver
         vars: { BINARY_NAME: "{{.ITEM}}" }
 
   artifact/retrieve:
     cmds:
       - for: { var: BINARIES_NAME }
-        task: common:artifact/retrieve
+        task: common:artifact:retrieve
         vars: { BINARY_NAME: "{{.ITEM}}" }

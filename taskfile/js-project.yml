@@ -22,32 +22,32 @@ tasks:
     cmds:
       - pnpm run test
 
-  test/coverage:
+  test:coverage:
     cmds:
       - pnpm run test/coverage
 
-  lint/check:
+  lint:check:
     cmds:
       - pnpm run lint/check
 
-  lint/format:
+  lint:format:
     cmds:
       - pnpm run lint/format
 
-  artifact/mock:
+  artifact:mock:
     deps: [ common:bin ]
     cmds:
       - for: { var: BINARIES_NAME }
         cmd: touch {{.ROOT_DIR}}/bin/{{.ITEM}}.zip
 
-  artifact/deliver:
+  artifact:deliver:
     cmds:
       - for: { var: BINARIES_NAME }
-        task: common:artifact/deliver
+        task: common:artifact:deliver
         vars: { BINARY_NAME: "{{.ITEM}}" }
 
-  artifact/retrieve:
+  artifact:retrieve:
     cmds:
       - for: { var: BINARIES_NAME }
-        task: common:artifact/retrieve
+        task: common:artifact:retrieve
         vars: { BINARY_NAME: "{{.ITEM}}" }
