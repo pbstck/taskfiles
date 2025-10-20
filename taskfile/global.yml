@@ -14,45 +14,45 @@ tasks:
       - for: { var: ALL_PROJECTS }
         task: '{{.ITEM}}:build'
 
-  lint/check:
+  lint:check:
     cmds:
       - for: { var: ALL_PROJECTS }
         task: '{{.ITEM}}:lint/check'
       - task: infra:lint/check
 
-  lint/format:
+  lint:format:
     cmds:
       - for: { var: ALL_PROJECTS }
         task: '{{.ITEM}}:lint/format'
       - task: infra:lint/format
 
-  tag/beta:
+  tag:beta:
     cmds:
       - task: tag
         vars: { STAGE: beta }
 
-  tag/prod:
+  tag:prod:
     cmds:
       - task: tag
         vars: { STAGE: prod }
 
   plan:
     internal: true
-    deps: [ artifacts/retrieve ]
+    deps: [ artifacts:retrieve ]
     cmd:
-      task: infra:terraform/plan
+      task: infra:terraform:plan
       vars: { STAGE: '{{.STAGE}}' }
 
-  plan/dev:
+  plan:dev:
     cmd:
       task: plan
       vars: { STAGE: dev }
 
-  plan/beta:
+  plan:beta:
     cmd:
       task: plan
       vars: { STAGE: beta }
-  plan/prod:
+  plan:prod:
     cmd:
       task: plan
       vars: { STAGE: prod }
@@ -60,36 +60,36 @@ tasks:
   deploy:
     deps: [ artifacts/retrieve ]
     cmd:
-      task: infra:terraform/apply
+      task: infra:terraform:apply
       vars: { STAGE: '{{.STAGE}}' }
 
-  deploy/dev:
+  deploy:dev:
     cmd:
       task: deploy
       vars: { STAGE: dev }
-  deploy/beta:
+  deploy:beta:
     cmd:
       task: deploy
       vars: { STAGE: beta }
-  deploy/prod:
+  deploy:prod:
     cmd:
       task: deploy
       vars: { STAGE: prod }
 
-  artifacts/deliver:
+  artifacts:deliver:
     cmds:
       - for: { var: ALL_PROJECTS }
-        task: '{{.ITEM}}:artifact/deliver'
+        task: '{{.ITEM}}:artifact:deliver'
 
-  artifacts/retrieve:
+  artifacts:retrieve:
     cmds:
       - for: { var: ALL_PROJECTS }
-        task: '{{.ITEM}}:artifact/retrieve'
+        task: '{{.ITEM}}:artifact:retrieve'
 
-  artifacts/mock:
+  artifacts:mock:
     cmds:
       - for: { var: ALL_PROJECTS }
-        task: '{{.ITEM}}:artifact/mock'
+        task: '{{.ITEM}}:artifact:mock'
 
 
   next_upgrade:

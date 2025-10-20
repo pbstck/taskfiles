@@ -11,7 +11,7 @@ vars:
 
 
 tasks:
-  terraform/plan:
+  terraform:plan:
     requires:
       vars: [STAGE]
     cmds:
@@ -19,7 +19,7 @@ tasks:
       - terraform init -reconfigure
       - terraform workspace select -or-create {{.STAGE}}
       - terraform plan -var git_revision={{.GIT_REVISION}} -out={{.PLAN_PATH}} {{.ADDITIONAL_VARIABLE}}
-  terraform/apply:
+  terraform:apply:
     requires:
       vars: [STAGE]
     cmds:
@@ -28,10 +28,10 @@ tasks:
       - terraform workspace select -or-create {{.STAGE}}
       - terraform apply {{.PLAN_PATH}}
 
-  lint/check:
+  lint:check:
     cmds:
       - terraform fmt -check -recursive
 
-  lint/format:
+  lint:format:
     cmds:
       - terraform fmt -recursive

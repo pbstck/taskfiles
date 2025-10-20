@@ -9,12 +9,12 @@ vars:
   SUFFIX: '{{.SUFFIX | default .GIT_REVISION}}'
 
 tasks:
-  artifact/deliver:
+  artifact:deliver:
     requires:
       vars: [BINARY_NAME, PROJECT]
     cmd: aws s3 cp {{.ROOT_DIR}}/{{.FOLDER}}/{{.BINARY_NAME}}.{{.EXTENSION}} s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.SUFFIX}}.{{.EXTENSION}}
 
-  artifact/retrieve:
+  artifact:retrieve:
     requires:
       vars: [BINARY_NAME, PROJECT]
     cmd: aws s3 cp s3://pubstack-artifacts/{{.PROJECT}}/{{.SUB_PROJECT}}{{.BINARY_NAME}}-{{.SUFFIX}}.{{.EXTENSION}} {{.ROOT_DIR}}/{{.FOLDER}}/{{.BINARY_NAME}}.{{.EXTENSION}}
