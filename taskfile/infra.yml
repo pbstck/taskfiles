@@ -8,6 +8,7 @@ includes:
 vars:
   DEFAULT_PLAN_PATH: /tmp/{{.PROJECT}}_plan.plan
   PLAN_PATH: '{{.PLAN_PATH | default .DEFAULT_PLAN_PATH}}'
+  AWS_ENV: '{{if not .CI}}AWS_PROFILE=pubstacktool {{end}}'
 
 
 tasks:
@@ -16,17 +17,17 @@ tasks:
       vars: [STAGE]
     cmds:
       - echo "planning project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
-      - terraform init -reconfigure
-      - terraform workspace select -or-create {{.STAGE}}
-      - terraform plan -var git_revision={{.GIT_REVISION}} -out={{.PLAN_PATH}} {{.ADDITIONAL_VARIABLE}}
+      - "{{.AWS_ENV}}terraform init -reconfigure"
+      - "{{.AWS_ENV}}terraform workspace select -or-create {{.STAGE}}"
+      - "{{.AWS_ENV}}terraform plan -var git_revision={{.GIT_REVISION}} -out={{.PLAN_PATH}} {{.ADDITIONAL_VARIABLE}}"
   terraform/apply:
     requires:
       vars: [STAGE]
     cmds:
-      - echo "planning project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
-      - terraform init -reconfigure
-      - terraform workspace select -or-create {{.STAGE}}
-      - terraform apply {{.PLAN_PATH}}
+      - echo "applying project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
+      - "{{.AWS_ENV}}terraform init -reconfigure"
+      - "{{.AWS_ENV}}terraform workspace select -or-create {{.STAGE}}"
+      - "{{.AWS_ENV}}terraform apply {{.PLAN_PATH}}"
 
   lint/check:
     cmds:
