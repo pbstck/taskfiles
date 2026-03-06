@@ -16,7 +16,8 @@ includes:
 tasks:
   build:
     vars:
-      BUILDER: '{{if .ARM}} cross {{else}} cargo {{end}}'
+      TARGET_ARCH: '{{if .ARM}}arm64{{else}}amd64{{end}}'
+      BUILDER: '{{if eq .TARGET_ARCH ARCH}}cargo{{else}}cross{{end}}'
       TARGET: '{{if .ARM}}aarch64-unknown-linux-gnu{{else}}x86_64-unknown-linux-gnu{{end}}'
     deps: [ common:bin ]
     requires:
