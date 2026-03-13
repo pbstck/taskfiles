@@ -18,7 +18,7 @@ tasks:
     vars:
       TARGET_ARCH: '{{if .ARM}}arm64{{else}}amd64{{end}}'
       BUILDER: '{{if eq .TARGET_ARCH ARCH}}cargo{{else}}cross{{end}}'
-      TARGET: '{{if .ARM}}aarch64-unknown-linux-gnu{{else}}x86_64-unknown-linux-gnu{{end}}'
+      TARGET: '{{if .ARM}}aarch64-unknown-linux-{{if .MUSL}}musl{{else}}gnu{{end}}{{else}}x86_64-unknown-linux-{{if .MUSL}}musl{{else}}gnu{{end}}{{end}}'
     deps: [ common:bin ]
     requires:
       vars: [ BINARIES_NAME, RUST_WORKSPACE_DIR ]
