@@ -65,6 +65,10 @@ tasks:
       - task: dump-prod
       - task: restore-dev
 
+  copy-prod-to-dev-no-history:
+    cmds:
+      - task: dump-prod-no-history
+      - task: restore-dev
 
   dump-prod:
     vars:
@@ -75,6 +79,18 @@ tasks:
     cmds:
       - mongodump --uri="mongodb+srv://{{.AWS_ACCESS_KEY}}:{{.AWS_SECRET_KEY}}@prod.gvqtr.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&appName=prod" --db=pubstack --excludeCollection=app_audit
 
+
+  dump-prod-no-history:
+    vars:
+      AWS_ACCESS_KEY:
+        sh: aws configure get aws_access_key_id --profile pubstackmaster
+      AWS_SECRET_KEY:
+        sh: aws configure get aws_secret_access_key --profile pubstackmaster
+      HISTORY_EXCLUDES:
+        sh: |
+          mongosh "mongodb+srv://{{.AWS_ACCESS_KEY}}:{{.AWS_SECRET_KEY}}@prod.gvqtr.mongodb.net/pubstack?authSource=%24external&authMechanism=MONGODB-AWS" --quiet --eval 'db.getCollectionNames().filter(c => c.endsWith("_history")).map(c => "--excludeCollection=" + c).join(" ")'
+    cmds:
+      - mongodump --uri="mongodb+srv://{{.AWS_ACCESS_KEY}}:{{.AWS_SECRET_KEY}}@prod.gvqtr.mongodb.net/?authSource=%24external&authMechanism=MONGODB-AWS&retryWrites=true&w=majority&appName=prod" --db=pubstack --excludeCollection=app_audit {{.HISTORY_EXCLUDES}}
 
   restore-dev:
     vars:
