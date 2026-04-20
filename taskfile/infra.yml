@@ -23,10 +23,14 @@ tasks:
     requires:
       vars: [STAGE]
     cmds:
-      - echo "planning project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
+      - echo "applying project {{.PROJECT}} revision {{.GIT_REVISION}} on stage {{.STAGE}} ..."
       - terraform init -reconfigure
       - terraform workspace select -or-create {{.STAGE}}
       - terraform apply {{.PLAN_PATH}}
+
+  terraform/lock:
+    cmds:
+      - terraform providers lock -platform=linux_amd64 -platform=darwin_arm64
 
   lint/check:
     cmds:
