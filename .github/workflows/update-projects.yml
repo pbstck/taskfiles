@@ -19,11 +19,11 @@ jobs:
         project: [ browser-tracing, gam-crawler, intake ]
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: ./taskfiles
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: ./${{matrix.project}}
           repository: 'pbstck/${{matrix.project}}'
